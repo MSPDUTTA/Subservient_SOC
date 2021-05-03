@@ -230,7 +230,8 @@ module subservient_core
    wire 		   rdata1;
 
 
-   serv_rf_ram_if
+  //serv_rf_ram_if
+  subservient_rf_ram_if
      #(.width    (rf_width),
        .reset_strategy (RESET_STRATEGY),
        .csr_regs (WITH_CSR*4))
