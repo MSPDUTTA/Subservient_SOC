@@ -19,10 +19,15 @@ set ::env(DESIGN_NAME) subservient
 
 set ::env(VERILOG_FILES) "\
 	$script_dir/../../caravel/verilog/rtl/defines.v \
-	$script_dir/../../verilog/rtl/user_proj_example.v"
+	$script_dir/../../verilog/rtl/subservient/subservient_rf_ram_if.v \
+	$script_dir/../../verilog/rtl/subservient/subservient_ram.v \
+	$script_dir/../../verilog/rtl/subservient/debug_switch.v \
+	$script_dir/../../verilog/rtl/subservient/subservient_core.v \
+	$script_dir/../../verilog/rtl/subservient/subservient_gpio.v \
+	$script_dir/../../verilog/rtl/subservient/subservient_top_level.v"
 
 set ::env(CLOCK_PORT) ""
-set ::env(CLOCK_NET) "counter.clk"
+set ::env(CLOCK_NET) "i_clk"
 set ::env(CLOCK_PERIOD) "10"
 
 set ::env(FP_SIZING) absolute
