@@ -1,20 +1,8 @@
-/* subservient_core.v : CPU wrapper for the subservient SoC
+/*
+ * subservient_core.v : Toplevel for the subservient SoC without peripherals
  *
- * ISC License
- *
- * Copyright (C) 2020 Olof Kindgren <olof.kindgren@gmail.com>
- *
- * Permission to use, copy, modify, and/or distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ * SPDX-FileCopyrightText: 2021 Olof Kindgren <olof.kindgren@gmail.com>
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 `default_nettype none
@@ -200,11 +188,11 @@ module subservient_core
 
       .o_sram_waddr (o_sram_waddr),
       .o_sram_wdata (o_sram_wdata),
-      .o_sram_wen   (o_sram_wen), 
+      .o_sram_wen   (o_sram_wen),
       .o_sram_raddr (o_sram_raddr),
       .i_sram_rdata (i_sram_rdata),
-      .o_sram_ren   (o_sram_ren), 
-   
+      .o_sram_ren   (o_sram_ren),
+
       .i_wb_adr (wb_mem_adr[$clog2(memsize)-1:2]),
       .i_wb_stb (wb_mem_stb),
       .i_wb_we  (wb_mem_we) ,
@@ -230,8 +218,7 @@ module subservient_core
    wire 		   rdata1;
 
 
-  //serv_rf_ram_if
-  subservient_rf_ram_if
+   subservient_rf_ram_if
      #(.width    (rf_width),
        .reset_strategy (RESET_STRATEGY),
        .csr_regs (WITH_CSR*4))
