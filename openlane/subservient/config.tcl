@@ -27,6 +27,7 @@ set ::env(VERILOG_FILES) "\
 	$script_dir/../../verilog/rtl/subservient/serv_alu.v \
 	$script_dir/../../verilog/rtl/subservient/serv_rf_if.v \
 	$script_dir/../../verilog/rtl/subservient/serv_mem_if.v \
+	$script_dir/../../verilog/rtl/subservient/serv_rf_ram_if.v \
 	$script_dir/../../verilog/rtl/subservient/serv_csr.v \
 	$script_dir/../../verilog/rtl/subservient/subservient_rf_ram_if.v \
 	$script_dir/../../verilog/rtl/subservient/subservient_ram.v \
