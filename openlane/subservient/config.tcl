@@ -19,6 +19,15 @@ set ::env(DESIGN_NAME) subservient
 
 set ::env(VERILOG_FILES) "\
 	$script_dir/../../caravel/verilog/rtl/defines.v \
+	$script_dir/../../verilog/rtl/subservient/serv_state.v \
+	$script_dir/../../verilog/rtl/subservient/serv_decode.v \
+	$script_dir/../../verilog/rtl/subservient/serv_immdec.v \
+	$script_dir/../../verilog/rtl/subservient/serv_bufreg.v \
+	$script_dir/../../verilog/rtl/subservient/serv_ctrl.v \
+	$script_dir/../../verilog/rtl/subservient/serv_alu.v \
+	$script_dir/../../verilog/rtl/subservient/serv_rf_if.v \
+	$script_dir/../../verilog/rtl/subservient/serv_mem_if.v \
+	$script_dir/../../verilog/rtl/subservient/serv_csr.v \
 	$script_dir/../../verilog/rtl/subservient/subservient_rf_ram_if.v \
 	$script_dir/../../verilog/rtl/subservient/subservient_ram.v \
 	$script_dir/../../verilog/rtl/subservient/debug_switch.v \
