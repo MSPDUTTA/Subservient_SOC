@@ -22,6 +22,9 @@ set ::env(VERILOG_FILES) "\
 	$script_dir/../../verilog/rtl/subservient/subservient_rf_ram_if.v \
 	$script_dir/../../verilog/rtl/subservient/subservient_ram.v \
 	$script_dir/../../verilog/rtl/subservient/debug_switch.v \
+	$script_dir/../../verilog/rtl/subservient/serv_top.v \
+	$script_dir/../../verilog/rtl/subservient/serving_mux.v \
+	$script_dir/../../verilog/rtl/subservient/serving_arbiter.v \
 	$script_dir/../../verilog/rtl/subservient/subservient_core.v \
 	$script_dir/../../verilog/rtl/subservient/subservient_gpio.v \
 	$script_dir/../../verilog/rtl/subservient/subservient_top_level.v"
