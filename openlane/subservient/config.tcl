@@ -52,7 +52,7 @@ set ::env(GND_NETS) [list {vssd1} {vssd2} {vssa1} {vssa2}]
 set ::env(FP_PIN_ORDER_CFG) $script_dir/pin_order.cfg
 
 set ::env(GLB_RT_ADJUSTMENT) 0.21
-set ::env(KLAYOUT_DRC_KLAYOUT_GDS) 0
+set ::env(RUN_KLAYOUT_DRC) 0
 set ::env(PL_TARGET_DENSITY) 0.5
 
 # If you're going to use multiple power domains, then keep this disabled.
