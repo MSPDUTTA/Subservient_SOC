@@ -34,6 +34,26 @@
  *
  *-------------------------------------------------------------
  */
+//`include "sky130_sram_1kbyte_1rw1r_32x256_8.v"
+//`include "subservient/serv_state.v"
+//`include "subservient/serv_decode.v"
+//`include "subservient/serv_immdec.v"
+//`include "subservient/serv_bufreg.v"
+//`include "subservient/serv_ctrl.v"
+//`include "subservient/serv_alu.v"
+//`include "subservient/serv_rf_if.v"
+//`include "subservient/serv_mem_if.v"
+//`include "subservient/serv_rf_ram_if.v"
+//`include "subservient/serv_csr.v"
+//`include "subservient/subservient_rf_ram_if.v"
+//`include "subservient/subservient_ram.v"
+//`include "subservient/debug_switch.v"
+//`include "subservient/serv_top.v"
+//`include "subservient/serving_mux.v"
+//`include "subservient/serving_arbiter.v"
+//`include "subservient/subservient_core.v"
+//`include "subservient/subservient_gpio.v"
+//`include "subservient/subservient_top_level.v"
 
 module user_proj_top #(
     parameter BITS = 32
@@ -85,13 +105,7 @@ module user_proj_top #(
     wire [`MPRJ_IO_PADS-1:0] io_out;
     wire [`MPRJ_IO_PADS-1:0] io_oeb;
 
-    wire [31:0] rdata; 
-    wire [31:0] wdata;
-    wire [BITS-1:0] count;
-
-    wire valid;
-    wire [3:0] wstrb;
-    wire [31:0] la_write;
+    wire  q;
 
     wire [aw-1:0] sram_waddr;
     wire [7:0] 	 sram_wdata;
@@ -99,35 +113,25 @@ module user_proj_top #(
     wire [aw-1:0] sram_raddr;
     wire [7:0] 	 sram_rdata;
     wire 	 sram_ren;
-
-
-    // WB MI A
-    assign valid = wbs_cyc_i && wbs_stb_i; 
-    assign wstrb = wbs_sel_i & {4{wbs_we_i}};
-    assign wbs_dat_o = rdata;
-    assign wdata = wbs_dat_i;
-
     // IO
-    assign io_out = count;
-    assign io_oeb = {(`MPRJ_IO_PADS-1){rst}};
+    assign io_out = q;
 
     // IRQ
     assign irq = 3'b000;	// Unused
 
     // LA
-    assign la_data_out = {{(127-BITS){1'b0}}, count};
-    // Assuming LA probes [63:32] are for controlling the count register  
-    assign la_write = ~la_oenb[63:32] & ~{BITS{valid}};
-    // Assuming LA probes [65:64] are for controlling the count clk & reset  
+    assign la_data_out = {{(127-BITS){1'b0}}, q};
+    // Assuming LA probes [65:64] are for controlling the serv clk & reset  
     assign clk = (~la_oenb[64]) ? la_data_in[64]: wb_clk_i;
     assign rst = (~la_oenb[65]) ? la_data_in[65]: wb_rst_i;
 
-       //Adapt the 8-bit SRAM interface from subservient to the 32-bit OpenRAM instance
+    reg deb_mode;
    reg [1:0] sram_bsel;
    always @(posedge clk) begin
       sram_bsel  <= sram_raddr[1:0];
+      deb_mode <= 1'b1; 
    end
-
+   
    wire [3:0] wmask0 = 4'd1 << sram_waddr[1:0];
    wire [7:0] waddr0 = sram_waddr[9:2]; //256 32-bit words = 1kB
    wire [31:0] din0 = {4{sram_wdata}}; //Mirror write data to all byte lanes
@@ -172,14 +176,14 @@ module user_proj_top #(
       .o_sram_ren   (sram_ren),
 
       //Debug interface
-      .i_debug_mode (debug_mode),
-      .i_wb_dbg_adr (wb_dbg_adr),
-      .i_wb_dbg_dat (wb_dbg_dat),
-      .i_wb_dbg_sel (wb_dbg_sel),
-      .i_wb_dbg_we  (wb_dbg_we ),
-      .i_wb_dbg_stb (wb_dbg_stb),
-      .o_wb_dbg_rdt (wb_dbg_rdt),
-      .o_wb_dbg_ack (wb_dbg_ack),
+      .i_debug_mode (deb_mode),
+      .i_wb_dbg_adr (wbs_adr_i),
+      .i_wb_dbg_dat (wbs_dat_i),
+      .i_wb_dbg_sel (wbs_sel_i),
+      .i_wb_dbg_we  (wbs_we_i),
+      .i_wb_dbg_stb (wbs_stb_i),
+      .o_wb_dbg_rdt (wbs_dat_o),
+      .o_wb_dbg_ack (wbs_ack_o),
 
       // External I/O
       .o_gpio (q));
