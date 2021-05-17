@@ -34,26 +34,6 @@
  *
  *-------------------------------------------------------------
  */
-//`include "sky130_sram_1kbyte_1rw1r_32x256_8.v"
-//`include "subservient/serv_state.v"
-//`include "subservient/serv_decode.v"
-//`include "subservient/serv_immdec.v"
-//`include "subservient/serv_bufreg.v"
-//`include "subservient/serv_ctrl.v"
-//`include "subservient/serv_alu.v"
-//`include "subservient/serv_rf_if.v"
-//`include "subservient/serv_mem_if.v"
-//`include "subservient/serv_rf_ram_if.v"
-//`include "subservient/serv_csr.v"
-//`include "subservient/subservient_rf_ram_if.v"
-//`include "subservient/subservient_ram.v"
-//`include "subservient/debug_switch.v"
-//`include "subservient/serv_top.v"
-//`include "subservient/serving_mux.v"
-//`include "subservient/serving_arbiter.v"
-//`include "subservient/subservient_core.v"
-//`include "subservient/subservient_gpio.v"
-//`include "subservient/subservient_top_level.v"
 
 module user_proj_top #(
     parameter BITS = 32
@@ -94,48 +74,33 @@ module user_proj_top #(
     // IRQ
     output [2:0] irq
 );
-    wire clk;
-    wire rst;
-    
-    parameter memsize = 8192;
-    parameter with_csr = 0;
-    parameter aw    = $clog2(memsize);
+   parameter memsize = 8192;
+   parameter with_csr = 0;
+   parameter aw    = $clog2(memsize);
 
-    wire [`MPRJ_IO_PADS-1:0] io_in;
-    wire [`MPRJ_IO_PADS-1:0] io_out;
-    wire [`MPRJ_IO_PADS-1:0] io_oeb;
+   wire  q;
+   wire [aw-1:0] sram_waddr;
+   wire [7:0] 	 sram_wdata;
+   wire 	 sram_wen;
+   wire [aw-1:0] sram_raddr;
+   wire [7:0] 	 sram_rdata;
+   wire 	 sram_ren;
+   // IO
+   assign io_out = q;
 
-    wire  q;
+   // IRQ
+   assign irq = 3'b000;	// Unused
 
-    wire [aw-1:0] sram_waddr;
-    wire [7:0] 	 sram_wdata;
-    wire 	 sram_wen;
-    wire [aw-1:0] sram_raddr;
-    wire [7:0] 	 sram_rdata;
-    wire 	 sram_ren;
-    // IO
-    assign io_out = q;
+   // LA
+   assign la_data_out = q;
 
-    // IRQ
-    assign irq = 3'b000;	// Unused
-
-    // LA
-    assign la_data_out = {{(127-BITS){1'b0}}, q};
-    // Assuming LA probes [65:64] are for controlling the serv clk & reset  
-    assign clk = (~la_oenb[64]) ? la_data_in[64]: wb_clk_i;
-    assign rst = (~la_oenb[65]) ? la_data_in[65]: wb_rst_i;
-
-    reg deb_mode;
-   reg [1:0] sram_bsel;
-   always @(posedge clk) begin
-      sram_bsel  <= sram_raddr[1:0];
-      deb_mode <= 1'b1; 
-   end
-   
+   wire deb_mode;
+   wire [1:0] sram_bsel;
+   assign  sram_bsel  = sram_raddr[1:0];
+   assign  deb_mode = 1'b1; 
    wire [3:0] wmask0 = 4'd1 << sram_waddr[1:0];
    wire [7:0] waddr0 = sram_waddr[9:2]; //256 32-bit words = 1kB
    wire [31:0] din0 = {4{sram_wdata}}; //Mirror write data to all byte lanes
-
    wire [7:0]  addr1 = sram_raddr[9:2];
    wire [31:0] dout1;
    assign sram_rdata = dout1[sram_bsel*8+:8]; //Pick the right byte from the read data
@@ -146,7 +111,7 @@ module user_proj_top #(
        .VERBOSE (0))
    sram
      (
-      .clk0   (clk),
+      .clk0   (wb_clk_i),
       .csb0   (!sram_wen),
       .web0   (1'b0),
       .wmask0 (wmask0),
@@ -158,15 +123,13 @@ module user_proj_top #(
       .addr1  (addr1),
       .dout1  (dout1));
 
-
    subservient
      #(.memsize  (memsize),
        .WITH_CSR (with_csr))
    dut
      (// Clock & reset
-      .i_clk (clk),
-      .i_rst (rst),
-
+      .i_clk (wb_clk_i),
+      .i_rst (wb_rst_i),
       //SRAM interface
       .o_sram_waddr (sram_waddr),
       .o_sram_wdata (sram_wdata),
@@ -174,7 +137,6 @@ module user_proj_top #(
       .o_sram_raddr (sram_raddr),
       .i_sram_rdata (sram_rdata),
       .o_sram_ren   (sram_ren),
-
       //Debug interface
       .i_debug_mode (deb_mode),
       .i_wb_dbg_adr (wbs_adr_i),
@@ -184,7 +146,6 @@ module user_proj_top #(
       .i_wb_dbg_stb (wbs_stb_i),
       .o_wb_dbg_rdt (wbs_dat_o),
       .o_wb_dbg_ack (wbs_ack_o),
-
       // External I/O
       .o_gpio (q));
 
