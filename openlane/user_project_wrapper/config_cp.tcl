@@ -43,7 +43,6 @@ set ::env(VERILOG_FILES_BLACKBOX) "\
 	$script_dir/../../caravel/verilog/rtl/defines.v \
 	$script_dir/../../verilog/rtl/subservient/subservient_top_level.v \
 	$script_dir/../../verilog/rtl/sky130_sram_1kbyte_1rw1r_32x256_8.v \
-	$script_dir/../../verilog/rtl/user_proj_example.v \
 	$script_dir/../../verilog/rtl/user_proj_top.v " 
 
 
