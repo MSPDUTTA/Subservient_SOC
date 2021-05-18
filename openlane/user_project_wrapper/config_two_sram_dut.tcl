@@ -31,6 +31,7 @@ set ::env(VERILOG_FILES) "\
 
 ## Clock configurations
 set ::env(CLOCK_PORT) "user_clock2"
+set ::env(CLOCK_NET) "wb_clk_i"
 
 set ::env(CLOCK_PERIOD) "10"
 
@@ -42,35 +43,19 @@ set ::env(MACRO_PLACEMENT_CFG) $script_dir/macro.cfg
 set ::env(VERILOG_FILES_BLACKBOX) "\
 	$script_dir/../../caravel/verilog/rtl/defines.v \
 	$script_dir/../../verilog/rtl/subservient/subservient_top_level.v \
-	$script_dir/../../verilog/rtl/sky130_sram_1kbyte_1rw1r_32x256_8.v \
-	$script_dir/../../verilog/rtl/user_proj_top.v " 
+	$script_dir/../../verilog/rtl/sky130_sram_1kbyte_1rw1r_32x256_8.v" 
 
 
 set ::env(EXTRA_LEFS) "\
 	$script_dir/../../lef/subservient.lef \
-	$script_dir/../../lef/sky130_sram_1kbyte_1rw1r_32x256_8.lef\
-	$script_dir/../../lef/user_proj_top.lef " 
+	$script_dir/../../lef/sky130_sram_1kbyte_1rw1r_32x256_8.lef" 
 
 
 set ::env(EXTRA_GDS_FILES) "\
-    $script_dir/../../gds/subservient.gds \
-	$script_dir/../../gds/sky130_sram_1kbyte_1rw1r_32x256_8.gds\
-	$script_dir/../../gds/user_proj_top.gds " 
+        $script_dir/../../gds/subservient.gds \
+	$script_dir/../../gds/sky130_sram_1kbyte_1rw1r_32x256_8.gds" 
 
 set ::env(GLB_RT_MAXLAYER) 5
 
 set ::env(FP_PDN_CHECK_NODES) 0
 
-# The following is because there are no std cells in the example wrapper project.
-set ::env(SYNTH_TOP_LEVEL) 1
-set ::env(PL_RANDOM_GLB_PLACEMENT) 1
-
-set ::env(PL_RESIZER_DESIGN_OPTIMIZATIONS) 0
-set ::env(PL_RESIZER_TIMING_OPTIMIZATIONS) 0
-set ::env(PL_RESIZER_BUFFER_INPUT_PORTS) 0
-set ::env(PL_RESIZER_BUFFER_OUTPUT_PORTS) 0
-
-set ::env(DIODE_INSERTION_STRATEGY) 0
-set ::env(FILL_INSERTION) 0
-set ::env(TAP_DECAP_INSERTION) 0
-set ::env(CLOCK_TREE_SYNTH) 0
