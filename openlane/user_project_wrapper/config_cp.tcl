@@ -55,7 +55,7 @@ set ::env(EXTRA_LEFS) "\
 set ::env(EXTRA_GDS_FILES) "\
     $script_dir/../../gds/subservient.gds \
 	$script_dir/../../gds/sky130_sram_1kbyte_1rw1r_32x256_8.gds\
-	$script_dir/../../lef/user_proj_top.lef " 
+	$script_dir/../../lef/user_proj_top.gds " 
 
 set ::env(GLB_RT_MAXLAYER) 5
 
