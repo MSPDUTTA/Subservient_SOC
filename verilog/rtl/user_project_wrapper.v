@@ -82,89 +82,47 @@ module user_project_wrapper #(
 /* User project is instantiated  here   */
 /*--------------------------------------*/
 
-    parameter memsize = 8192;
-    parameter with_csr = 0;
-    parameter aw    = $clog2(memsize);
+user_proj_top mprj (
+    `ifdef USE_POWER_PINS
+	.vdda1(vdda1),	// User area 1 3.3V power
+	.vdda2(vdda2),	// User area 2 3.3V power
+	.vssa1(vssa1),	// User area 1 analog ground
+	.vssa2(vssa2),	// User area 2 analog ground
+	.vccd1(vccd1),	// User area 1 1.8V power
+	.vccd2(vccd2),	// User area 2 1.8V power
+	.vssd1(vssd1),	// User area 1 digital ground
+	.vssd2(vssd2),	// User area 2 digital ground
+    `endif
 
-    wire  q;
-  
-    wire [aw-1:0] sram_waddr;
-    wire [7:0]   sram_wdata;
-    wire         sram_wen;
-    wire [aw-1:0] sram_raddr;
-    wire [7:0]   sram_rdata;
-    wire         sram_ren;
-    // IO
-    wire deb_mode;
-    
+    .wb_clk_i(wb_clk_i),
+    .wb_rst_i(wb_rst_i),
+
+    // MGMT SoC Wishbone Slave
+
+    .wbs_cyc_i(wbs_cyc_i),
+    .wbs_stb_i(wbs_stb_i),
+    .wbs_we_i(wbs_we_i),
+    .wbs_sel_i(wbs_sel_i),
+    .wbs_adr_i(wbs_adr_i),
+    .wbs_dat_i(wbs_dat_i),
+    .wbs_ack_o(wbs_ack_o),
+    .wbs_dat_o(wbs_dat_o),
+
+    // Logic Analyzer
+
+    .la_data_in(la_data_in),
+    .la_data_out(la_data_out),
+    .la_oenb (la_oenb),
+
+    // IO Pads
+
+    .io_in (io_in),
+    .io_out(io_out),
+    .io_oeb(io_oeb),
+
     // IRQ
-    assign user_irq = 3'b000;        
-
-    assign io_out = q;
-    // LA
-    assign la_data_out =  q;
-
-   wire [1:0] sram_bsel;
-   assign sram_bsel  = sram_raddr[1:0];
-
-   assign deb_mode = 1'b1;
-   wire [3:0] wmask0 = 4'd1 << sram_waddr[1:0];
-   wire [7:0] waddr0 = sram_waddr[9:2]; //256 32-bit words = 1kB
-   wire [31:0] din0 = {4{sram_wdata}}; //Mirror write data to all byte lanes
-
-   wire [7:0]  addr1 = sram_raddr[9:2];
-   wire [31:0] dout1;
-   assign sram_rdata = dout1[sram_bsel*8+:8]; //Pick the right byte from the read data
-
- sky130_sram_1kbyte_1rw1r_32x256_8
-     #(// FIXME: This delay is arbitrary.
-       .DELAY (3),
-       .VERBOSE (0))
-   sram
-     (
-      .clk0   (wb_clk_i),
-      .csb0   (!sram_wen),
-      .web0   (1'b0),
-      .wmask0 (wmask0),
-      .addr0  (waddr0),
-      .din0   (din0),
-      .dout0  (),
-      .clk1   (wb_clk_i),
-      .csb1   (!sram_ren),
-      .addr1  (addr1),
-      .dout1  (dout1));
-
-
-   subservient
-     #(.memsize  (memsize),
-       .WITH_CSR (with_csr))
-   dut
-     (// Clock & reset
-      .i_clk (wb_clk_i),
-      .i_rst (wb_rst_i),
-
-      //SRAM interface
-      .o_sram_waddr (sram_waddr),
-      .o_sram_wdata (sram_wdata),
-      .o_sram_wen   (sram_wen),
-      .o_sram_raddr (sram_raddr),
-      .i_sram_rdata (sram_rdata),
-      .o_sram_ren   (sram_ren),
-
-      //Debug interface
-      .i_debug_mode (deb_mode),
-      .i_wb_dbg_adr (wbs_adr_i),
-      .i_wb_dbg_dat (wbs_dat_i),
-      .i_wb_dbg_sel (wbs_sel_i),
-      .i_wb_dbg_we  (wbs_we_i),
-      .i_wb_dbg_stb (wbs_stb_i),
-      .o_wb_dbg_rdt (wbs_dat_o),
-      .o_wb_dbg_ack (wbs_ack_o),
-
-      // External I/O
-      .o_gpio (q));
-
-
+    .irq(user_irq)
+);
 
 endmodule	// user_project_wrapper
 
