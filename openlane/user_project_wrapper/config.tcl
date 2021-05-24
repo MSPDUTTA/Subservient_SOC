@@ -35,7 +35,6 @@ set ::env(CLOCK_NET) "wb_clk_i"
 
 set ::env(CLOCK_PERIOD) "10"
 
-set ::env(PDN_CFG) $script_dir/pdn.tcl
 
 ## Internal Macros
 ### Macro Placement
