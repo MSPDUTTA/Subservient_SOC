@@ -17,16 +17,16 @@ pdngen::specify_grid stdcell {
 }
 
 pdngen::specify_grid macro {
-    power_pins "VPWR VDD vdd"
-    ground_pins "VGND VSS gnd"
+    power_pins "vccd1 vccd2 vdda1 vdda2"
+    ground_pins "vssd1 vssd2 vssa1 vssa2"
     blockages "li1 met1 met2 met3 met4"
     straps { 
     } 
     connect {{met4_PIN_ver met5} {met3_PIN_hor met5}}
 }
 
-set ::env(VDD_NETS) [list {vccd1} {vccd2} {vdda1} {vdda2}]
-set ::env(GND_NETS) [list {vssd1} {vssd2} {vssa1} {vssa2}]
+#set ::env(VDD_NETS) [list {vccd1} {vccd2} {vdda1} {vdda2}]
+#set ::env(GND_NETS) [list {vssd1} {vssd2} {vssa1} {vssa2}]
 
 set ::halo $::env(FP_HORIZONTAL_HALO)
 
