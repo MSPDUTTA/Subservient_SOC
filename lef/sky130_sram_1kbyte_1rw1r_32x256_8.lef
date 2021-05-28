@@ -856,7 +856,7 @@ MACRO sky130_sram_1kbyte_1rw1r_32x256_8
          RECT  325.72 382.84 326.1 383.22 ;
       END
    END dout1[31]
-   PIN vcdd1 
+   PIN vccd1 
       DIRECTION INOUT ;
       USE POWER ; 
       SHAPE ABUTMENT ; 
@@ -864,8 +864,8 @@ MACRO sky130_sram_1kbyte_1rw1r_32x256_8
          LAYER met4 ;
          RECT  1.36 0.0 2.42 382.54 ;
       END
-   END vcdd1
-   PIN vsdd1
+   END vccd1
+   PIN vssd1
       DIRECTION INOUT ;
       USE GROUND ; 
       SHAPE ABUTMENT ; 
@@ -873,7 +873,7 @@ MACRO sky130_sram_1kbyte_1rw1r_32x256_8
          LAYER met4 ;
          RECT  0.0 0.0 1.06 382.54 ;
       END
-   END vsdd1
+   END vssd1
    OBS
    LAYER  met1 ;
       RECT  0.62 0.62 461.48 382.6 ;
