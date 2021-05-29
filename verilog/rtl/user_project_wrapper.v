@@ -82,19 +82,14 @@ module user_project_wrapper #(
 /* User project is instantiated  here   */
 /*--------------------------------------*/
 
-    parameter memsize = 8192;
-    parameter aw    = 13; //$clog2(memsize);
-
     wire  q;
   
-    wire [aw-1:0] sram_waddr;
+    wire [12:0] sram_waddr;
     wire [7:0]   sram_wdata;
     wire         sram_wen;
-    wire [aw-1:0] sram_raddr;
+    wire [12:0] sram_raddr;
     wire [7:0]   sram_rdata;
     wire         sram_ren;
-    // IO
-    wire deb_mode;
     
     // IRQ
     assign user_irq = 3'b000;        
@@ -106,7 +101,6 @@ module user_project_wrapper #(
    wire [1:0] sram_bsel;
    assign sram_bsel  = sram_raddr[1:0];
 
-   assign deb_mode = 1'b1;
    wire [3:0] wmask0 = 4'd1 << sram_waddr[1:0];
    wire [7:0] waddr0 = sram_waddr[9:2]; //256 32-bit words = 1kB
    wire [31:0] din0 = {4{sram_wdata}}; //Mirror write data to all byte lanes
@@ -115,12 +109,7 @@ module user_project_wrapper #(
    wire [31:0] dout1;
    assign sram_rdata = dout1[sram_bsel*8+:8]; //Pick the right byte from the read data
 
- sky130_sram_1kbyte_1rw1r_32x256_8
-     #(// FIXME: This delay is arbitrary.
-       .DELAY (3),
-       .VERBOSE (0))
-   sram
-     (
+ sky130_sram_1kbyte_1rw1r_32x256_8 sram (
       .clk0   (wb_clk_i),
       .csb0   (!sram_wen),
       .web0   (1'b0),
@@ -134,10 +123,7 @@ module user_project_wrapper #(
       .dout1  (dout1));
 
 
-   subservient
-     #(.memsize  (memsize),
-       .WITH_CSR (0))
-   dut
+   subservient dut
      (// Clock & reset
       .i_clk (wb_clk_i),
       .i_rst (wb_rst_i),
@@ -151,7 +137,7 @@ module user_project_wrapper #(
       .o_sram_ren   (sram_ren),
 
       //Debug interface
-      .i_debug_mode (deb_mode),
+      .i_debug_mode (1),
       .i_wb_dbg_adr (wbs_adr_i),
       .i_wb_dbg_dat (wbs_dat_i),
       .i_wb_dbg_sel (wbs_sel_i),
