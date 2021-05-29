@@ -18,11 +18,7 @@
  */
 
 `default_nettype none
-module subservient
-  #(//Memory parameters
-    parameter memsize = 512,
-    parameter aw    = $clog2(memsize))
-  (
+module subservient (
     `ifdef USE_POWER_PINS
     inout vdda1,	// User area 1 3.3V supply
     inout vdda2,	// User area 2 3.3V supply
@@ -38,10 +34,10 @@ module subservient
    input wire 		i_rst,
 
    //SRAM interface
-   output wire [aw-1:0] o_sram_waddr,
+   output wire [12:0] o_sram_waddr,
    output wire [7:0] 	o_sram_wdata,
    output wire 		o_sram_wen,
-   output wire [aw-1:0] o_sram_raddr,
+   output wire [12:0] o_sram_raddr,
    input wire [7:0] 	i_sram_rdata,
    output wire 		o_sram_ren,
 
@@ -58,6 +54,7 @@ module subservient
    //External I/O
    output wire 		o_gpio);
 
+   parameter memsize = 8192;
    parameter WITH_CSR = 0;
 
    wire [31:0] 	wb_core_adr;
