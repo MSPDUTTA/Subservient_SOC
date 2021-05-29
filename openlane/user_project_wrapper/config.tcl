@@ -35,7 +35,6 @@ set ::env(CLOCK_NET) "wb_clk_i"
 
 set ::env(CLOCK_PERIOD) "10"
 
-
 ## Internal Macros
 ### Macro Placement
 set ::env(MACRO_PLACEMENT_CFG) $script_dir/macro.cfg
@@ -59,4 +58,5 @@ set ::env(EXTRA_GDS_FILES) "\
 set ::env(GLB_RT_MAXLAYER) 5
 
 set ::env(FP_PDN_CHECK_NODES) 0
+set ::env(GLB_RT_L4_ADJUSTMENT) 0.20
 
