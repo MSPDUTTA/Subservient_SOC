@@ -84,13 +84,6 @@ module user_project_wrapper #(
 
     wire  q;
   
-    wire [12:0] sram_waddr;
-    wire [7:0]   sram_wdata;
-    wire         sram_wen;
-    wire [12:0] sram_raddr;
-    wire [7:0]   sram_rdata;
-    wire         sram_ren;
-    
     // IRQ
     assign user_irq = 3'b000;        
 
@@ -98,29 +91,19 @@ module user_project_wrapper #(
     // LA
     assign la_data_out =  q;
 
-   wire [1:0] sram_bsel;
-   assign sram_bsel  = sram_raddr[1:0];
-
-   wire [3:0] wmask0 = 4'd1 << sram_waddr[1:0];
-   wire [7:0] waddr0 = sram_waddr[9:2]; //256 32-bit words = 1kB
-   wire [31:0] din0 = {4{sram_wdata}}; //Mirror write data to all byte lanes
-
-   wire [7:0]  addr1 = sram_raddr[9:2];
-   wire [31:0] dout1;
-   assign sram_rdata = dout1[sram_bsel*8+:8]; //Pick the right byte from the read data
 
  sky130_sram_1kbyte_1rw1r_32x256_8 sram (
       .clk0   (wb_clk_i),
-      .csb0   (!sram_wen),
+      .csb0   (o_csb0),
       .web0   (1'b0),
-      .wmask0 (wmask0),
-      .addr0  (waddr0),
-      .din0   (din0),
+      .wmask0 (o_wmask0),
+      .addr0  (o_waddr0),
+      .din0   (o_din0),
       .dout0  (),
       .clk1   (wb_clk_i),
-      .csb1   (!sram_ren),
-      .addr1  (addr1),
-      .dout1  (dout1));
+      .csb1   (o_csb1),
+      .addr1  (o_addr1),
+      .dout1  (i_dout1));
 
 
    subservient dut
@@ -129,12 +112,13 @@ module user_project_wrapper #(
       .i_rst (wb_rst_i),
 
       //SRAM interface
-      .o_sram_waddr (sram_waddr),
-      .o_sram_wdata (sram_wdata),
-      .o_sram_wen   (sram_wen),
-      .o_sram_raddr (sram_raddr),
-      .i_sram_rdata (sram_rdata),
-      .o_sram_ren   (sram_ren),
+      .o_wmask0 (o_wmask0),
+      .o_waddr0 (o_waddr0),
+      .o_din0 (o_din0),
+      .o_addr1 (o_addr1),
+      .i_dout1(i_dout1),
+      .o_csb0   (o_csb0),
+      .o_csb1   (o_csb1),
 
       //Debug interface
       .i_debug_mode (1),
