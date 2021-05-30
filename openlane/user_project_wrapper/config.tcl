@@ -60,3 +60,17 @@ set ::env(GLB_RT_MAXLAYER) 5
 set ::env(FP_PDN_CHECK_NODES) 0
 set ::env(GLB_RT_L4_ADJUSTMENT) 0.20
 
+
+# The following is because there are no std cells in the example wrapper project.
+set ::env(SYNTH_TOP_LEVEL) 1
+set ::env(PL_RANDOM_GLB_PLACEMENT) 1
+
+set ::env(PL_RESIZER_DESIGN_OPTIMIZATIONS) 0
+set ::env(PL_RESIZER_TIMING_OPTIMIZATIONS) 0
+set ::env(PL_RESIZER_BUFFER_INPUT_PORTS) 0
+set ::env(PL_RESIZER_BUFFER_OUTPUT_PORTS) 0
+
+set ::env(DIODE_INSERTION_STRATEGY) 0
+set ::env(FILL_INSERTION) 0
+set ::env(TAP_DECAP_INSERTION) 0
+set ::env(CLOCK_TREE_SYNTH) 0
