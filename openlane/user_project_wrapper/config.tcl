@@ -59,7 +59,7 @@ set ::env(GLB_RT_MAXLAYER) 5
 
 set ::env(FP_PDN_CHECK_NODES) 0
 set ::env(GLB_RT_L4_ADJUSTMENT) 0.20
-
+set ::env(RUN_KLAYOUT_DRC) 0
 
 # The following is because there are no std cells in the example wrapper project.
 set ::env(SYNTH_TOP_LEVEL) 1
