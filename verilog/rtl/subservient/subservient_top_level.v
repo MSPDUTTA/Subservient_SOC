@@ -34,12 +34,13 @@ module subservient (
    input wire 		i_rst,
 
    //SRAM interface
-   output wire [12:0] o_sram_waddr,
-   output wire [7:0] 	o_sram_wdata,
-   output wire 		o_sram_wen,
-   output wire [12:0] o_sram_raddr,
-   input wire [7:0] 	i_sram_rdata,
-   output wire 		o_sram_ren,
+   output wire[3:0]  o_wmask0,
+   output wire[7:0]  o_waddr0,
+   output wire[31:0] o_din0,
+   output wire[7:0]  o_addr1,
+   input wire[31:0]  i_dout1,
+   output wire o_csb0,
+   output wire o_csb1,
 
    //Debug interface
    input wire 		i_debug_mode,
@@ -65,7 +66,22 @@ module subservient (
    wire [31:0] 	wb_core_rdt;
    wire 	wb_core_ack;
 
+   wire [12:0] o_sram_waddr;
+   wire [7:0] 	o_sram_wdata;
+   wire [12:0] o_sram_raddr;
+   wire [7:0] 	i_sram_rdata;
    wire 	wb_gpio_rdt;
+   wire [1:0]  sram_bsel;
+   wire	     o_sram_wen;
+   wire o_sram_ren;
+   assign sram_bsel = o_sram_raddr;
+   assign o_wmask0 = 4'd1 << o_sram_waddr[1:0];
+   assign o_waddr0 = o_sram_waddr[9:2]; //256 32-bit words = 1kB
+   assign o_din0 = {4{o_sram_wdata}}; //Mirror write data to all byte lanes
+   assign o_addr1 = o_sram_raddr[9:2];
+   assign i_sram_rdata = i_dout1[sram_bsel*8+:8]; //Pick the right byte from the read data
+   assign o_csb0 = !o_sram_wen;
+   assign o_csb1 = !o_sram_ren;
    assign wb_core_rdt = {31'd0, wb_gpio_rdt};
 
    subservient_gpio gpio
