@@ -20,13 +20,13 @@ module subservient_tb;
 
    reg clk = 1'b0;
    reg rst = 1'b1;
-
-   wire [aw-1:0] sram_waddr;
-   wire [7:0] 	 sram_wdata;
-   wire 	 sram_wen;
-   wire [aw-1:0] sram_raddr;
-   wire [7:0] 	 sram_rdata;
-   wire 	 sram_ren;
+    wire[3:0]  wmask0;
+    wire[7:0]  waddr0;
+    wire[31:0] din0;
+    wire[7:0]  addr1;
+    wire[31:0]  dout1;
+    wire o_csb0;
+    wire o_csb1;
 
    //Debug interface
    reg 		 debug_mode;
@@ -117,19 +117,9 @@ module subservient_tb;
 
    uart_decoder uart_decoder (baudrate, q);
 
-   //Adapt the 8-bit SRAM interface from subservient to the 32-bit OpenRAM instance
-   reg [1:0] sram_bsel;
-   always @(posedge clk) begin
-      sram_bsel  <= sram_raddr[1:0];
-   end
 
-   wire [3:0] wmask0 = 4'd1 << sram_waddr[1:0];
-   wire [7:0] waddr0 = sram_waddr[9:2]; //256 32-bit words = 1kB
-   wire [31:0] din0 = {4{sram_wdata}}; //Mirror write data to all byte lanes
 
-   wire [7:0]  addr1 = sram_raddr[9:2];
-   wire [31:0] dout1;
-   assign sram_rdata = dout1[sram_bsel*8+:8]; //Pick the right byte from the read data
+
 
    sky130_sram_1kbyte_1rw1r_32x256_8
      #(// FIXME: This delay is arbitrary.
@@ -138,14 +128,14 @@ module subservient_tb;
    sram
      (
       .clk0   (clk),
-      .csb0   (!sram_wen),
+      .csb0   (o_csb0),
       .web0   (1'b0),
       .wmask0 (wmask0),
       .addr0  (waddr0),
       .din0   (din0),
       .dout0  (),
       .clk1   (clk),
-      .csb1   (!sram_ren),
+      .csb1   (o_csb1),
       .addr1  (addr1),
       .dout1  (dout1));
 
@@ -158,12 +148,13 @@ module subservient_tb;
       .i_rst (rst),
 
       //SRAM interface
-      .o_sram_waddr (sram_waddr),
-      .o_sram_wdata (sram_wdata),
-      .o_sram_wen   (sram_wen),
-      .o_sram_raddr (sram_raddr),
-      .i_sram_rdata (sram_rdata),
-      .o_sram_ren   (sram_ren),
+      .o_wmask0 (wmask0),
+      .o_waddr0 (waddr0),
+      .o_din0 (din0),
+      .o_addr1 (addr1),
+      .i_dout1(dout1),
+      .o_csb0   (o_csb0),
+      .o_csb1   (o_csb1),
 
       //Debug interface
       .i_debug_mode (debug_mode),
