@@ -87,12 +87,16 @@ module user_project_wrapper #(
     // IRQ
     assign user_irq = 3'b000;        
 
-    assign io_out = q;
+    //assign io_out[0] = q;
     // LA
-    assign la_data_out =  q;
+    //assign la_data_out[0] =  q;
 
 
  sky130_sram_1kbyte_1rw1r_32x256_8 sram (
+    `ifdef USE_POWER_PINS
+    .vccd1(vccd1),
+    .vssd1(vssd1),
+`endif
       .clk0   (wb_clk_i),
       .csb0   (o_csb0),
       .web0   (1'b0),
@@ -106,8 +110,18 @@ module user_project_wrapper #(
       .dout1  (i_dout1));
 
 
-   subservient dut
-     (// Clock & reset
+subservient dut(    
+`ifdef USE_POWER_PINS
+	.vdda1(vdda1),	// User area 1 3.3V power
+	.vdda2(vdda2),	// User area 2 3.3V power
+	.vssa1(vssa1),	// User area 1 analog ground
+	.vssa2(vssa2),	// User area 2 analog ground
+	.vccd1(vccd1),	// User area 1 1.8V power
+	.vccd2(vccd2),	// User area 2 1.8V power
+	.vssd1(vssd1),	// User area 1 digital ground
+	.vssd2(vssd2),	// User area 2 digital ground
+`endif
+         // Clock & reset
       .i_clk (wb_clk_i),
       .i_rst (wb_rst_i),
 
@@ -131,7 +145,7 @@ module user_project_wrapper #(
       .o_wb_dbg_ack (wbs_ack_o),
 
       // External I/O
-      .o_gpio (q));
+      .o_gpio (io_out[0]));
 
 
 
