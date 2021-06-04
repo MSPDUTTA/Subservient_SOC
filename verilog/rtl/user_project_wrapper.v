@@ -257,61 +257,61 @@ subservient dut2(
       // External I/O
       .o_gpio (io_out[2]));
 
- sky130_sram_1kbyte_1rw1r_32x256_8 sram3 (
-    `ifdef USE_POWER_PINS
-    .vccd1(vccd1),
-    .vssd1(vssd1),
-`endif
-      .clk0   (wb_clk_i),
-      .csb0   (o_csb0_3),
-      .web0   (1'b0),
-      .wmask0 (o_wmask0_3),
-      .addr0  (o_waddr0_3),
-      .din0   (o_din0_3),
-      .dout0  (),
-      .clk1   (wb_clk_i),
-      .csb1   (o_csb1_3),
-      .addr1  (o_addr1_3),
-      .dout1  (i_dout1_3));
-
-
-subservient dut3(    
-`ifdef USE_POWER_PINS
-	.vdda1(vdda1),	// User area 1 3.3V power
-	.vdda2(vdda2),	// User area 2 3.3V power
-	.vssa1(vssa1),	// User area 1 analog ground
-	.vssa2(vssa2),	// User area 2 analog ground
-	.vccd1(vccd1),	// User area 1 1.8V power
-	.vccd2(vccd2),	// User area 2 1.8V power
-	.vssd1(vssd1),	// User area 1 digital ground
-	.vssd2(vssd2),	// User area 2 digital ground
-`endif
-         // Clock & reset
-      .i_clk (wb_clk_i),
-      .i_rst (wb_rst_i),
-
-      //SRAM interface
-      .o_wmask0 (o_wmask0_3),
-      .o_waddr0 (o_waddr0_3),
-      .o_din0 (o_din0_3),
-      .o_addr1 (o_addr1_3),
-      .i_dout1(i_dout1_3),
-      .o_csb0   (o_csb0_3),
-      .o_csb1   (o_csb1_3),
-
-      //Debug interface
-      .i_debug_mode (1),
-      .i_wb_dbg_adr (wbs_adr_i),
-      .i_wb_dbg_dat (wbs_dat_i),
-      .i_wb_dbg_sel (wbs_sel_i),
-      .i_wb_dbg_we  (wbs_we_i),
-      .i_wb_dbg_stb (wbs_stb_i),
-      .o_wb_dbg_rdt (wbs_dat_o),
-      .o_wb_dbg_ack (wbs_ack_o),
-
-      // External I/O
-      .o_gpio (io_out[3]));
-
+// sky130_sram_1kbyte_1rw1r_32x256_8 sram3 (
+//    `ifdef USE_POWER_PINS
+//    .vccd1(vccd1),
+//    .vssd1(vssd1),
+//`endif
+//      .clk0   (wb_clk_i),
+//      .csb0   (o_csb0_3),
+//      .web0   (1'b0),
+//      .wmask0 (o_wmask0_3),
+//      .addr0  (o_waddr0_3),
+//      .din0   (o_din0_3),
+//      .dout0  (),
+//      .clk1   (wb_clk_i),
+//      .csb1   (o_csb1_3),
+//      .addr1  (o_addr1_3),
+//      .dout1  (i_dout1_3));
+//
+//
+//subservient dut3(    
+//`ifdef USE_POWER_PINS
+//	.vdda1(vdda1),	// User area 1 3.3V power
+//	.vdda2(vdda2),	// User area 2 3.3V power
+//	.vssa1(vssa1),	// User area 1 analog ground
+//	.vssa2(vssa2),	// User area 2 analog ground
+//	.vccd1(vccd1),	// User area 1 1.8V power
+//	.vccd2(vccd2),	// User area 2 1.8V power
+//	.vssd1(vssd1),	// User area 1 digital ground
+//	.vssd2(vssd2),	// User area 2 digital ground
+//`endif
+//         // Clock & reset
+//      .i_clk (wb_clk_i),
+//      .i_rst (wb_rst_i),
+//
+//      //SRAM interface
+//      .o_wmask0 (o_wmask0_3),
+//      .o_waddr0 (o_waddr0_3),
+//      .o_din0 (o_din0_3),
+//      .o_addr1 (o_addr1_3),
+//      .i_dout1(i_dout1_3),
+//      .o_csb0   (o_csb0_3),
+//      .o_csb1   (o_csb1_3),
+//
+//      //Debug interface
+//      .i_debug_mode (1),
+//      .i_wb_dbg_adr (wbs_adr_i),
+//      .i_wb_dbg_dat (wbs_dat_i),
+//      .i_wb_dbg_sel (wbs_sel_i),
+//      .i_wb_dbg_we  (wbs_we_i),
+//      .i_wb_dbg_stb (wbs_stb_i),
+//      .o_wb_dbg_rdt (wbs_dat_o),
+//      .o_wb_dbg_ack (wbs_ack_o),
+//
+//      // External I/O
+//      .o_gpio (io_out[3]));
+//
 
 endmodule	// user_project_wrapper
 
