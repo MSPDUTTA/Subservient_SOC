@@ -40,7 +40,7 @@ set ::env(VERILOG_FILES) "\
 	$script_dir/../../verilog/rtl/subservient/subservient_top_level.v"
 
 set ::env(CLOCK_PORT) "i_clk"
-set ::env(CLOCK_PERIOD) "10"
+set ::env(CLOCK_PERIOD) "24"
 
 set ::env(FP_SIZING) absolute
 set ::env(DIE_AREA) "0 0 900 600"
