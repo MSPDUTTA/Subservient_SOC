@@ -43,11 +43,9 @@ module serv_state
    output reg 	     o_cnt_done,
    output wire 	     o_bufreg_en);
 
-   wire 	     cnt4;
-
    reg 	stage_two_req;
    reg 	init_done;
-   reg 	misalign_trap_sync;
+   wire misalign_trap_sync;
 
    reg [4:2] o_cnt;
    reg [3:0] o_cnt_r;
@@ -66,7 +64,6 @@ module serv_state
    assign o_cnt1 = (o_cnt[4:2] == 3'd0) & o_cnt_r[1];
    assign o_cnt2 = (o_cnt[4:2] == 3'd0) & o_cnt_r[2];
    assign o_cnt3 = (o_cnt[4:2] == 3'd0) & o_cnt_r[3];
-   assign cnt4   = (o_cnt[4:2] == 3'd1) & o_cnt_r[0];
    assign o_cnt7 = (o_cnt[4:2] == 3'd1) & o_cnt_r[3];
 
    //Take branch for jump or branch instructions (opcode == 1x0xx) if
@@ -97,9 +94,12 @@ module serv_state
 
    /*
     bufreg is used during mem. branch and shift operations
+
     mem : bufreg is used for dbus address. Shift in data during phase 1.
           Shift out during phase 2 if there was an misalignment exception.
+
     branch : Shift in during phase 1. Shift out during phase 2
+
     shift : Shift in during phase 1. Continue shifting between phases (except
             for the first cycle after init). Shift out during phase 2
     */
@@ -138,10 +138,12 @@ module serv_state
        The top three bits (o_cnt) are implemented as a normal counter, but
        instead of the two LSB, o_cnt_r is a 4-bit shift register which loops 0-3
        When o_cnt_r[3] is 1, o_cnt will be increased.
+
        The counting starts when the core is idle and the i_rf_ready signal
        comes in from the RF module by shifting in the i_rf_ready bit as LSB of
        the shift register. Counting is stopped by using o_cnt_done to block the
        bit that was supposed to be shifted into bit 0 of o_cnt_r.
+
        There are two benefit of doing the counter this way
        1. We only need to check four bits instead of five when we want to check
        if the counter is at a certain value. For 4-LUT architectures this means
@@ -167,6 +169,8 @@ module serv_state
 
    generate
       if (WITH_CSR) begin
+	 reg 	misalign_trap_sync_r;
+
 	 //trap_pending is only guaranteed to have correct value during the
 	 // last cycle of the init stage
 	 wire trap_pending = WITH_CSR & ((take_branch & i_ctrl_misalign) |
@@ -174,13 +178,13 @@ module serv_state
 
 	 always @(posedge i_clk) begin
 	    if (o_cnt_done)
-	      misalign_trap_sync <= trap_pending & o_init;
+	      misalign_trap_sync_r <= trap_pending & o_init;
 	    if (i_rst)
 	      if (RESET_STRATEGY != "NONE")
-		misalign_trap_sync <= 1'b0;
+		misalign_trap_sync_r <= 1'b0;
 	 end
+	 assign misalign_trap_sync = misalign_trap_sync_r;
       end else
-	always @(*)
-	  misalign_trap_sync = 1'b0;
+	assign misalign_trap_sync = 1'b0;
    endgenerate
 endmodule

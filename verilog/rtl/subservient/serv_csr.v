@@ -82,10 +82,12 @@ module serv_csr
 
       /*
        The mie bit in mstatus gets updated under three conditions
+
        When a trap is taken, the bit is cleared
        During an mret instruction, the bit is restored from mpie
        During a mstatus CSR access instruction it's assigned when
         bit 3 gets updated
+
        These conditions are all mutually exclusibe
        */
       if ((i_trap & i_cnt_done) | i_mstatus_en & i_cnt3 | i_mret)
@@ -100,15 +102,20 @@ module serv_csr
 
       /*
        The four lowest bits in mcause hold the exception code
+
        These bits get updated under three conditions
+
        During an mcause CSR access function, they are assigned when
        bits 0 to 3 gets updated
+
        During an external interrupt the exception code is set to
        7, since SERV only support timer interrupts
+
        During an exception, the exception code is assigned to indicate
        if it was caused by an ebreak instruction (3),
        ecall instruction (11), misaligned load (4), misaligned store (6)
        or misaligned jump (0)
+
        The expressions below are derived from the following truth table
        irq  => 0111 (timer=7)
        e_op => x011 (ebreak=3, ecall=11)
