@@ -85,10 +85,32 @@ module user_project_wrapper #(
     // IRQ
     assign user_irq = 3'b000;        
 
-    //wire  q;
-    //assign io_out[0] = q;
-    // LA
-    //assign la_data_out[0] =  q;
+// for sram instance 
+    wire o_csb0;
+    wire [3:0] o_wmask0;
+    wire [7:0] o_waddr0;
+    wire [31:0] o_din0;
+    wire o_csb1;
+    wire [7:0] o_addr1;
+    wire [31:0] i_dout1;
+
+// for sram1 instance
+    wire o_csb0_1;
+    wire [3:0] o_wmask0_1;
+    wire [7:0] o_waddr0_1;
+    wire [31:0]o_din0_1;
+    wire o_csb1_1;
+    wire [7:0] o_addr1_1;
+    wire [31:0]i_dout1_1;
+
+// for sram2 instance
+    wire o_csb0_2;
+    wire [3:0] o_wmask0_2;
+    wire [7:0] o_waddr0_2;
+    wire [31:0]o_din0_2;
+    wire  o_csb1_2;
+    wire [7:0] o_addr1_2;
+    wire [31:0]i_dout1_2;
 
  sky130_sram_1kbyte_1rw1r_32x256_8 sram (
     `ifdef USE_POWER_PINS
