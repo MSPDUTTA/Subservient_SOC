@@ -43,7 +43,7 @@ set ::env(CLOCK_PORT) "i_clk"
 set ::env(CLOCK_PERIOD) "24"
 
 set ::env(FP_SIZING) absolute
-set ::env(DIE_AREA) "0 0 200 200"
+set ::env(DIE_AREA) "0 0 900 600"
 set ::env(DESIGN_IS_CORE) 0
 
 set ::env(VDD_NETS) [list {vccd1} {vccd2} {vdda1} {vdda2}]
@@ -53,6 +53,6 @@ set ::env(FP_PIN_ORDER_CFG) $script_dir/pin_order.cfg
 
 set ::env(GLB_RT_ADJUSTMENT) 0.21
 set ::env(RUN_KLAYOUT_DRC) 0
-set ::env(PL_TARGET_DENSITY) 0.7
+set ::env(PL_TARGET_DENSITY) 0.5
 # If you're going to use multiple power domains, then keep this disabled.
 set ::env(RUN_CVC) 0
